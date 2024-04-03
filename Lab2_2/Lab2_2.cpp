@@ -3,9 +3,61 @@
 
 #include <iostream>
 
+/* Ukr - Здійснює перетворення символів кирилиці з кодування
+1251 (Cyrillic (Windows)) у кодування 866 (Cyrillic DOS).
+Підтримує символи як російської, так і української мов.*/
+void Ukr(const char *Str, std::size_t strLength, char*& outPut)
+{
+    if (Str == nullptr)
+        return;
+
+    if (strLength == 0)
+        return;
+    
+    outPut = new char [strLength + 1]; 
+
+    strcpy_s(outPut, strLength + 1, Str);
+
+    /* у наступному циклі замінюємо коди деяких російських букв на коди
+    українських, не змінюючи кодів інших символів */
+    for (int i = 0; i < strLength + 1; i++)
+        switch (*(Str + i))
+        {
+        case -78: outPut[i] = 73; break; // І
+        case -77: outPut[i] = 105; break; // і
+        case -86: outPut[i] = 242; break; // Є
+        case -70: outPut[i] = 243; break; // є
+        case -81: outPut[i] = 244; break; // Ї
+        case -65: outPut[i] = 245; break; // ї
+        case -88: outPut[i] = 240; break; // Ё
+        case -72: outPut[i] = 241; break; // ё
+
+        default:
+        {
+            if ((outPut[i] <= -17) && (outPut[i] >= -64))
+                outPut[i] -= 64; //А..Я,а..п
+            
+            else if ((outPut[i] <= -1) && (outPut[i] >= -16))
+                outPut[i] -= 16; //р..я
+        }
+
+        }
+       
+}
+
 int main()
 {
-    std::cout << "Hello World!\n";
+    char ukr[] = "Якась строка! іііі";
+
+    char *ukr_out;
+
+    Ukr(ukr, strlen(ukr), ukr_out);
+
+    std::cout << *ukr_out;
+
+    delete[] ukr_out;
+
+    system("Pause");
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
