@@ -2,71 +2,39 @@
 //
 
 #include <iostream>
+#include<conio.h>
+#include"..\Lab2_2\ukrString.h"
 
-/* Ukr - Здійснює перетворення символів кирилиці з кодування
-1251 (Cyrillic (Windows)) у кодування 866 (Cyrillic DOS).
-Підтримує символи як російської, так і української мов.*/
-void Ukr(const char *Str, std::size_t strLength, char*& outPut)
-{
-    if (Str == nullptr)
-        return;
 
-    if (strLength == 0)
-        return;
-    
-    outPut = new char [strLength + 1]; 
-
-    strcpy_s(outPut, strLength + 1, Str);
-
-    /* у наступному циклі замінюємо коди деяких російських букв на коди
-    українських, не змінюючи кодів інших символів */
-    for (int i = 0; i < strLength + 1; i++)
-        switch (*(Str + i))
-        {
-        case -78: outPut[i] = 73; break; // І
-        case -77: outPut[i] = 105; break; // і
-        case -86: outPut[i] = 242; break; // Є
-        case -70: outPut[i] = 243; break; // є
-        case -81: outPut[i] = 244; break; // Ї
-        case -65: outPut[i] = 245; break; // ї
-        case -88: outPut[i] = 240; break; // Ё
-        case -72: outPut[i] = 241; break; // ё
-
-        default:
-        {
-            if ((outPut[i] <= -17) && (outPut[i] >= -64))
-                outPut[i] -= 64; //А..Я,а..п
-            
-            else if ((outPut[i] <= -1) && (outPut[i] >= -16))
-                outPut[i] -= 16; //р..я
-        }
-
-        }
-       
-}
 
 int main()
 {
-    char ukr[] = "Якась строка! іііі";
+    using namespace strings;
+    using namespace std;
+    char key;
+    do
+    {
+        system("cls");
 
-    char *ukr_out;
+        cout << ukrString("Лабораторна робота номер 2!") << endl;
 
-    Ukr(ukr, strlen(ukr), ukr_out);
+        cout << ukrString("Введіть ваш рядок:\n");
 
-    std::cout << *ukr_out;
+        string inp;        
+        getline(cin, inp);
+        ukrString ukr_inp(inp);
+        ukr_inp.use_for_input();
 
-    delete[] ukr_out;
+        cout << ukrString("Ви ввели:") << endl;
+        cout << inp;
+
+        cout << ukrString("\nЯкщо ви бажаєте вийти? Натисніть 1. Або будь яку іншу клавішу.");
+        key = _getch();
+    } while (key != '1');
+
+    
 
     system("Pause");
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.

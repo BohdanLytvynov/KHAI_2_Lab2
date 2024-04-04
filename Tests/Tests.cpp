@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include"..\SmartAllocator\smartAllocator.h"
+#include"..\Lab2_2\ukrString.h"
 #include <vector>
 //#include "..\SmartAllocator\smartAllocator.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace allocator;
+
 namespace smart_allocator_Tests
 {
 	TEST_CLASS(Allocation)
@@ -219,7 +221,19 @@ namespace smart_allocator_Tests
 			}
 		}
 
+		TEST_METHOD(IsWorkingWithPtrCorrect)
+		{
+			char* t = "Word";
 
+			smart_allocator<char> w(t, 4);			
+
+			w.iterate([t](char& e, int i)-> bool
+				{
+					Assert::AreEqual(e, *(t + i));
+
+					return true;
+				});
+		}
 
 
 	};
@@ -422,5 +436,5 @@ namespace smart_allocator_Tests
 
 namespace ukrString_Tests
 {
-
+	
 }
