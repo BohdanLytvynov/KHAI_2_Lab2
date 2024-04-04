@@ -16,6 +16,8 @@ namespace strings
 
 		void from_char_ptr(char* src, size_t length);
 
+		void from_string(const std::string& str);
+
 		char* get_chars();
 
 		std::string to_string() const;
@@ -30,9 +32,11 @@ namespace strings
 
 #pragma region public static Functions
 
-		static char Ukr(char* c);
+		static char Ukr(char str);
 		
 		static void ukrStrCopy(ukrString& src, ukrString dest, int start, int length);
+
+		static std::istream& getLine(std::istream& is, ukrString& output);
 
 #pragma endregion
 
@@ -51,6 +55,8 @@ namespace strings
 
 		ukrString& operator = (const ukrString& other);
 
+		ukrString& operator = (const char cstr []);
+
 		friend std::ostream& operator << (std::ostream& os, ukrString& string)
 		{
 			size_t length = string.getLength();
@@ -60,7 +66,7 @@ namespace strings
 				if (string.m_use_for_input)
 					os << string[i];
 				else
-					os << Ukr(&string[i]);
+					os << Ukr(string[i]);
 			}
 
 			return os;
@@ -75,7 +81,7 @@ namespace strings
 				if (string.m_use_for_input)
 					os << string[i];
 				else
-					os << Ukr( const_cast<char*>(&string[i]));
+					os << Ukr(string[i]);
 			}
 
 			return os;

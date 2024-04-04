@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include"..\SmartAllocator\smartAllocator.h"
+#include"..\Lab2_2\Lab2_2_functions.h"
 #include"..\Lab2_2\ukrString.h"
 #include <vector>
 //#include "..\SmartAllocator\smartAllocator.h"
@@ -434,7 +435,72 @@ namespace smart_allocator_Tests
 	};
 }
 
-namespace ukrString_Tests
+namespace lab2_tests
 {
-	
+	TEST_CLASS(Lab2)
+	{
+	public:
+		TEST_METHOD(IsSplitFunctionIsCorrect)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString test("Це рядок для перевірки моєї програми");
+
+			wordSet words;
+
+			Split(test, words, {" "});
+
+			Assert::IsTrue(words.size() == (size_t)6);
+
+			int i = 0;
+			char* str = nullptr;
+			for (Word w : words)
+			{
+				if (i == 0)
+					str = "Це";
+				else if (i == 1)
+					str = "рядок";
+				else if (i == 2)
+					str = "для";
+				else if (i == 3)
+					str = "перевірки";
+				else if (i == 4)
+					str = "моєї";
+				else if (i == 5)
+					str = "програми";
+
+				int j = 0;
+
+				for (char ch : w)
+				{
+					Assert::IsTrue(ch == str[j]);
+					++j;
+				}
+
+				++i;
+			}
+		}
+
+		TEST_METHOD(IsFindTheBiggestWordCorrect)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString test("Це рядок для перевірки моєї програми");
+
+			Word w = FindTheBiggestWord(test);
+
+			char res[] = "перевірки";
+
+			Assert::IsTrue(strlen(res) == w.size());
+
+			for (size_t i = 0; i < w.size(); i++)
+			{
+				Assert::IsTrue(res[i] == w[i]);
+			}
+
+			
+		}
+	};
 }

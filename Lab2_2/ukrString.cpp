@@ -54,6 +54,15 @@ void su::not_for_input()
 {
 	m_use_for_input = false;
 }
+
+void su::from_string(const std::string& str)
+{
+	if (m_chars.isAllocated())
+		m_chars.deAllocate();
+
+	m_chars.allocate_memory_block(str._Unchecked_begin(), str.length());
+}
+
 #pragma endregion
 
 
@@ -68,7 +77,7 @@ su::ukrString(char* str, size_t length) : ukrString()
 
 su::ukrString(char str[]) : ukrString()
 {
-	m_chars.allocate_memory_block(str, sizeof(str) / sizeof(str[0]));
+	m_chars.allocate_memory_block(str, strlen(str));
 }
 
 su::ukrString(const std::string& str) : ukrString()
@@ -85,6 +94,16 @@ su::ukrString(const ukrString& other)
 #pragma endregion
 
 #pragma region Operators
+
+su& su::operator= (const char c_str [])
+{
+	if (this->m_chars.isAllocated())
+		this->m_chars.deAllocate();
+
+	m_chars.allocate_memory_block(c_str, strlen(c_str));
+
+	return *this;
+}
 
 su& su::operator = (const ukrString& other)
 {
@@ -138,9 +157,9 @@ void su::ukrStrCopy(ukrString& src, ukrString dest, int start, int length)
 	}
 }
 
-char su::Ukr(char* input)
-{
-	switch (*(input))
+char su::Ukr(char str)
+{	
+	switch (str)
 	{
 		case -78: return 73;  // ²
 		case -77: return 105; // ³
@@ -153,11 +172,24 @@ char su::Ukr(char* input)
 
 	default:
 		{
-		if (*input <= -17 && *input >= -64) return *input -= 64;
+		if (str <= -17 && str >= -64) return str -= 64;
 		else
-			if (*input <= -1 && *input >= -16) return *input -= 16;
+			if (str <= -1 && str >= -16) return str -= 16;
 		}
 	}
+}
+
+std::istream& su::getLine(std::istream& is, su& output)
+{
+	std::string str;
+
+	std::getline(is, str);
+
+	output.from_string(str);
+
+	output.use_for_input();
+
+	return is;
 }
 
 #pragma endregion
