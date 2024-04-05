@@ -23,7 +23,7 @@ namespace allocator
 
 			m_allocated = false;
 
-			m_count = 0;			
+			m_count = 0;
 		}
 		/// <summary>
 		/// Ctor with built in allocation
@@ -49,7 +49,27 @@ namespace allocator
 
 				++i;
 			}
-				
+
+		}
+
+		/// <summary>
+		/// Ctor that enables working with arrays represented by ptr to the 1-st element
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="count"></param>
+		smart_allocator(T* ptr, size_t count) : smart_allocator()
+		{
+			allocate_memory_block(ptr, count);
+		}
+
+		/// <summary>
+		/// Ctor that enables working with arrays represented by ptr the 1-st element(Constant)
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="count"></param>
+		smart_allocator(const T* ptr, size_t count) : smart_allocator()
+		{
+			allocate_memory_block(ptr, count);
 		}
 
 		/// <summary>
@@ -58,9 +78,9 @@ namespace allocator
 		/// <param name="other">Source object</param>
 		smart_allocator(const smart_allocator<T>& other) : smart_allocator()
 		{
-			this->deAllocate();						
+			this->deAllocate();
 			this->m_block_allocation = other.m_block_allocation;
-			
+
 			if (!other.m_allocated)
 				return;
 
@@ -85,7 +105,7 @@ namespace allocator
 		/// Dereferencer
 		/// </summary>
 		/// <returns></returns>
-		T* getData()
+		T* getPtr()
 		{
 			if (m_allocated)
 				return m_obj;
@@ -164,7 +184,10 @@ namespace allocator
 			}
 
 		}
-		
+		/// <summary>
+		/// Allocate memory block using vector
+		/// </summary>
+		/// <param name="v">source vector</param>
 		void allocate_memory_block(std::vector<T> v)
 		{
 			if (!m_allocated)
@@ -183,7 +206,57 @@ namespace allocator
 
 				m_allocated = true;
 
-				m_block_allocation = true;				
+				m_block_allocation = true;
+			}
+
+		}
+
+		/// <summary>
+		/// Allocate memory block using ptr to the first element of the array
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="size"></param>
+		void allocate_memory_block(T* ptr, size_t size)
+		{
+			if (!m_allocated)
+			{
+				m_count = size;
+
+				m_obj = new T[m_count];
+
+				for (size_t i = 0; i < m_count; i++)
+				{
+					*(m_obj + i) = *(ptr + i);
+				}
+
+				m_allocated = true;
+
+				m_block_allocation = true;
+			}
+
+		}
+
+		/// <summary>
+		/// Allocate memory block using ptr to the first element of the array (ptr to const)
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="size"></param>
+		void allocate_memory_block(const T* ptr, size_t size)
+		{
+			if (!m_allocated)
+			{
+				m_count = size;
+
+				m_obj = new T[m_count];
+
+				for (size_t i = 0; i < m_count; i++)
+				{
+					*(m_obj + i) = *(ptr + i);
+				}
+
+				m_allocated = true;
+
+				m_block_allocation = true;
 			}
 
 		}
@@ -198,11 +271,11 @@ namespace allocator
 			else
 				this->deAllocate_();
 		}
-		
+
 		//Finalizer
 		~smart_allocator()
 		{
-			deAllocate();			
+			deAllocate();
 		}
 
 		void iterate(std::function<bool(const T& elem, int index)> func) const
@@ -210,11 +283,11 @@ namespace allocator
 			if (func == nullptr)
 				return;
 
-			if(m_block_allocation)
-				for (size_t i = 0; i < m_count; i++)				
+			if (m_block_allocation)
+				for (size_t i = 0; i < m_count; i++)
 					if (!func(*(m_obj + i), i))
 						break;
-				
+
 		}
 
 		void iterate(std::function<bool(T& elem, int index)> func)
@@ -223,12 +296,12 @@ namespace allocator
 				return;
 
 			if (m_block_allocation)
-				for (size_t i = 0; i < m_count; i++)				
+				for (size_t i = 0; i < m_count; i++)
 					if (!func(*(m_obj + i), i))
-						break;				
+						break;
 		}
 
-		//Operators
+#pragma region Operators
 
 		smart_allocator<T>& operator = (const smart_allocator<T>& other)
 		{
@@ -236,42 +309,91 @@ namespace allocator
 
 			this->m_block_allocation = other.m_block_allocation;
 
-			if(other.m_allocated)
-			{ 
+			if (other.m_allocated)
+			{
 				if (!m_block_allocation)
 					this->allocate(*other.m_obj);
 				else
 				{
 					this->allocate_memory_block(other.m_count);
 
-					other.iterate([this](T& e, int i) -> bool
-					{
-						*(m_obj + i) = e;
+					other.iterate([this](const T& e, int i) -> bool
+						{
+							*(m_obj + i) = e;
 
-						return true;
-					});
+							return true;
+						});
 				}
-			}		
+			}
 
 			return *this;
 		}
-		
+
 		/// <summary>
 		/// Operator [], provides simple access to items of the smart_allocator
 		/// </summary>
 		/// <param name="index">Index of the item in the collection</param>
 		/// <returns>Reference to the item</returns>
 		T& operator [] (int index)
-		{			
+		{
 			if (m_allocated)
-				return *(getData() + index);
-		}	
+				return *(m_obj + index);
+		}
 
+		/// <summary>
+		/// Operator [], provides simple access to items of the smart_allocator
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns>Const reference to the item</returns>
 		const T& operator [] (int index) const
 		{
 			if (m_allocated)
-				return *(getData() + index);
+				return *(m_obj + index);
 		}
+		/// <summary>
+		/// Equality operator
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		bool operator == (const smart_allocator<T>& value) const
+		{						
+			if (!this->m_allocated || !value.m_allocated) return false;
+
+			if (this->m_block_allocation != value.m_block_allocation) return false;
+
+			if (this->m_count != value.m_count) return false;
+						
+			if (!value.m_block_allocation)
+				return *(m_obj) == *value.m_obj;
+			else
+			{
+				bool res = true;
+
+				this->iterate([&res, &value](const T& e, int i)->bool
+					{
+						if (*(value.m_obj + i) != e)
+						{
+							res = false;
+							return false;
+						}
+
+					}
+
+				);
+
+				return res;
+			}
+
+			return false;
+				
+		}
+		 
+		bool operator != (const smart_allocator<T>& value) const
+		{
+			return !(*this == value);
+		}
+
+#pragma endregion
 
 	private:
 		T* m_obj;//Pointer
@@ -283,7 +405,7 @@ namespace allocator
 		size_t m_count;//Shows the size of the collection		
 
 #pragma region Private Funcions
-		
+
 		/// <summary>
 		/// Deallocates simple element
 		/// </summary>
@@ -317,7 +439,7 @@ namespace allocator
 #pragma endregion
 
 	};
-	
+
 }
 
 

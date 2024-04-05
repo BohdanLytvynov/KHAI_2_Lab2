@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{eb460b4b-a207-443a-a3b8-e3921aef8a20}</ProjectGuid>
-    <RootNamespace>RunTimeTests</RootNamespace>
+    <ProjectGuid>{20fe5920-bfe2-4637-b42e-8dffa00ecbab}</ProjectGuid>
+    <RootNamespace>Memoryleaktest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,6 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)SmartAllocator\$(IntDir)*.obj;$(SolutionDir)Lab2_2\$(IntDir)ukrString.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,10 +125,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)SmartAllocator\$(IntDir)*.obj;$(SolutionDir)Lab2_2\$(IntDir)ukrString.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="RunTimeTests.cpp" />
+    <ClCompile Include="Memory_leak_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lab2_2\Lab2_2.vcxproj">
+      <Project>{b240a7a5-adb9-49a4-8d98-e0bd112d4af5}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
