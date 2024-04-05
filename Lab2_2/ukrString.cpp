@@ -75,7 +75,7 @@ su::ukrString(char* str, size_t length) : ukrString()
 	m_chars.allocate_memory_block(str, length);
 }
 
-su::ukrString(char str[]) : ukrString()
+su::ukrString(const char* str) : ukrString()
 {
 	m_chars.allocate_memory_block(str, strlen(str));
 }
@@ -89,6 +89,11 @@ su::ukrString(const ukrString& other)
 {
 	m_use_for_input = other.m_use_for_input;
 	m_chars = other.m_chars;
+}
+
+su::ukrString(std::vector<char>& v) : ukrString()
+{
+	m_chars.allocate_memory_block(v);
 }
 
 #pragma endregion
@@ -128,6 +133,68 @@ const char& su::operator [] (int index) const
 {
 	if (m_chars.isAllocated())
 		return m_chars[index];
+}
+ 
+su su::operator + (const ukrString& other) const
+{	
+	su newStr;
+
+	size_t this_size = this->getLength();
+	size_t otherSize = other.getLength();
+
+	size_t newSize = this_size + otherSize;
+	
+	newStr.m_chars.allocate_memory_block(newSize);
+
+	for (size_t i = 0; i < this_size; i++)
+	{
+		newStr[i] = this->m_chars[i];
+	}
+
+	size_t j = 0;
+
+	for (size_t i = this_size; i < newSize; i++, j++)
+	{
+		newStr[i] = other[j];
+	}
+		
+	return newStr;
+}
+
+void su::operator += (const ukrString& other)
+{
+	size_t this_size = this->getLength();
+	size_t otherSize = other.getLength();
+
+	size_t newSize = this_size + otherSize;
+
+	allocator::smart_allocator<char> temp(m_chars);
+	
+	this->m_chars.deAllocate();
+
+	this->m_chars.allocate_memory_block(newSize);
+
+	for (size_t i = 0; i < this_size; i++)
+	{
+		m_chars[i] = temp[i];
+	}
+
+	size_t j = 0;
+
+	for (size_t i = this_size; i < newSize; i++, j++)
+	{
+		m_chars[i] = other[j];
+	}
+}
+
+bool su::operator == (const su& other)
+{
+	return m_chars == other.m_chars;
+}
+
+bool su::operator != (const su& other)
+{
+	return !(*this == other);
 }
 
 #pragma endregion

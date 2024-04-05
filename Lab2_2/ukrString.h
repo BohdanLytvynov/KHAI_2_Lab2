@@ -45,10 +45,13 @@ namespace strings
 
 		ukrString(char *str, size_t length);//Build new Ukr_string 
 
-		explicit ukrString(char str []);//Convert char string to ukr string
+		explicit ukrString(const char* str);//Convert char string to ukr string
+		
 		explicit ukrString(const std::string &str);
 
 		ukrString(const ukrString& other);
+
+		explicit ukrString(std::vector<char> & v);
 #pragma endregion
 
 #pragma region Operators
@@ -103,6 +106,15 @@ namespace strings
 		char& operator [] (int index);
 
 		const char& operator [] (int index) const;
+
+		ukrString operator + (const ukrString& other) const;
+		
+		void operator += (const ukrString& other);
+
+		bool operator == (const ukrString& other);
+
+		bool operator != (const ukrString& other);
+
 
 #pragma endregion
 

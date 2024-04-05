@@ -3,6 +3,10 @@
 #include "..\SmartAllocator\smartAllocator.h"
 #include"..\Lab2_2\ukrString.h"
 
+strings::ukrString Returning()
+{
+	return strings::ukrString("Тест");
+}
 
 void Test()
 {
@@ -40,6 +44,10 @@ int main()
 	allocator::smart_allocator<int> alloc(23);
 
 	strings::ukrString text("Test String");
+
+	strings::ukrString res = Returning();
+
+	std::cout << res << std::endl;
 	        
 }
 

@@ -445,7 +445,7 @@ namespace lab2_tests
 			using namespace strings;
 			using namespace lab2;
 
-			ukrString test("Це рядок для перевірки моєї програми");
+			ukrString test("Це  рядок   для перевірки  моєї  програми");
 
 			wordSet words;
 
@@ -498,9 +498,78 @@ namespace lab2_tests
 			for (size_t i = 0; i < w.size(); i++)
 			{
 				Assert::IsTrue(res[i] == w[i]);
+			}			
+		}
+
+		TEST_METHOD(IsTrimStringCorrect_Divider2)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString res("ролр нг ггнгш нг рол проа енгвкен");
+
+			ukrString test_res("ггнгш рол енгвкен");
+
+			ukrString test_exec_res = lab2::Trim_Words(res, 2);
+
+			Assert::IsTrue(test_res == test_exec_res);
+		}
+	};
+}
+
+namespace ukrString_Tests
+{
+	TEST_CLASS(UkrString_Tests)
+	{
+	public:
+		TEST_METHOD(IsConcatCorrect)
+		{			
+			using namespace strings;
+			ukrString str1("Гарного ");
+			ukrString str2("Дня");
+
+			ukrString res = str1 + str2;
+
+			size_t length = res.getLength();
+
+			const char* test = "Гарного Дня";
+
+			for (size_t i = 0; i < length; i++)
+			{
+				Assert::IsTrue(test[i] == res[i]);
 			}
 
-			
+			ukrString str3("Гарного ");
+			ukrString str4("Дня");
+
+			str3 += str4;
+
+			length = str3.getLength();
+
+			for (size_t i = 0; i < length; i++)
+			{
+				Assert::IsTrue(str3[i] == res[i]);
+			}
+		}
+
+		TEST_METHOD(IsEqualsCorrect)
+		{
+			using namespace strings;
+
+			ukrString str1("Добре");
+			ukrString str2("Добре");
+
+			Assert::IsTrue(str1 == str2);
+		}
+
+		TEST_METHOD(IsNotEqualsCorrect)
+		{
+			using namespace strings;
+
+			ukrString str1("Добре");
+			ukrString str2("Добре почуття");
+
+			Assert::IsTrue(str1 != str2);
 		}
 	};
 }

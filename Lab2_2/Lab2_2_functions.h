@@ -93,7 +93,7 @@ namespace lab2
 	{
 		wordSet set;
 
-		Split(str, set, { " " });
+		Split(str, set, { " " });//O(n)
 
 		int max_index = -1;
 
@@ -101,7 +101,7 @@ namespace lab2
 
 		size_t length = set.size();
 
-		for (size_t i = 0; i < length; i++)
+		for (size_t i = 0; i < length; i++)//O(2n)
 		{			
 			if (set[i].size() > max)
 			{
@@ -113,6 +113,44 @@ namespace lab2
 		return set[max_index];
 	}
 
+	static strings::ukrString Trim_Words(strings::ukrString& str, int divider)
+	{
+		strings::ukrString res;
+		
+		res.use_for_input();
+
+		wordSet words;
+
+		wordSet trim_res;
+
+		Split(str, words, {" "});
+		
+		
+		for (Word w : words)
+		{
+			if (!(w.size() % divider == 0))
+			{
+				trim_res.push_back(w);
+			}			
+		}
+		size_t length = trim_res.size();
+		size_t i = 0;
+		for (Word w : trim_res)
+		{
+			if (i != length - 1)
+			{
+				res += strings::ukrString(w) + strings::ukrString(" ");
+			}
+			else
+			{
+				res += strings::ukrString(w);
+			}
+
+			++i;
+		}
+
+		return res;
+	}
 }
 
 #endif // !LAB2_2_FUNCTIONS_H

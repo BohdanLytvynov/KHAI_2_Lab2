@@ -19,17 +19,19 @@ int main()
 	do
 	{
 		cout << ukrString("Лабораторна робота номер 2!") << endl;
-
+	
 		cout << ukrString("Введіть ваш рядок:\n");
 
 		ukrString inp;
+
+		inp.use_for_input();
 
 		ukrString::getLine(cin, inp);
 
 		cout << ukrString("Ви ввели:") << endl;
 		cout << inp;
 
-		char key = Input<char>(ukrString("Виберіть опцію, та натисніть ENTER: \n\t- 1) Пошук слова макс довжини, натисніть 1 \n\t- 2) Виконати завдання за варіантом натисніть 2 \n\t- 3) Вийти, натисніть 3"),
+		char key = Input<char>(ukrString("\nВиберіть опцію, та натисніть ENTER: \n\t- 1) Пошук слова макс довжини, натисніть 1 \n\t- 2) Виконати завдання за варіантом (5) натисніть 2 \n\t- 3) Вийти, натисніть 3"),
 			[](std::string& str)->char {return *str.c_str(); },
 			[](std::string& str, strings::ukrString& error)->bool
 			{
@@ -54,13 +56,27 @@ int main()
 				return true;
 
 			});
+		
+		Word biggest;
+
+		ukrString big;
 
 		switch (key)
 		{
 		case '1':
+						
+			biggest = FindTheBiggestWord(inp);
+			
+			big = ukrString(biggest); big.use_for_input();
 
+			cout << ukrString("Найбільше слово знайдено: \n") << big << endl;
+			
 			break;
 		case '2':
+
+			cout << ukrString("Видалення із рядка слова, довжина яких парна") << endl;
+
+			cout << Trim_Words(inp, 2) <<endl;
 
 			break;
 		default:

@@ -131,6 +131,11 @@
   <ItemGroup>
     <ClCompile Include="Memory_leak_test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lab2_2\Lab2_2.vcxproj">
+      <Project>{b240a7a5-adb9-49a4-8d98-e0bd112d4af5}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
