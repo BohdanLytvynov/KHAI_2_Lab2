@@ -87,12 +87,7 @@ namespace lab2
 				word.clear();
 			}
 		}
-	}
-
-	static bool IsFirstGreater(Word l, Word r)
-	{
-		return l.size() > r.size();
-	}
+	}	
 
 	static Word FindTheBiggestWord(strings::ukrString& str)
 	{
