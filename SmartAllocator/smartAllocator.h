@@ -53,6 +53,26 @@ namespace allocator
 		}
 
 		/// <summary>
+		/// Ctor that enables working with arrays represented by ptr to the 1-st element
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="count"></param>
+		smart_allocator(T* ptr, size_t count) : smart_allocator()
+		{
+			allocate_memory_block(ptr, count);
+		}
+
+		/// <summary>
+		/// Ctor that enables working with arrays represented by ptr the 1-st element(Constant)
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="count"></param>
+		smart_allocator(const T* ptr, size_t count) : smart_allocator()
+		{
+			allocate_memory_block(ptr, count);
+		}
+
+		/// <summary>
 		/// Copy ctor
 		/// </summary>
 		/// <param name="other">Source object</param>
@@ -164,7 +184,10 @@ namespace allocator
 			}
 
 		}
-
+		/// <summary>
+		/// Allocate memory block using vector
+		/// </summary>
+		/// <param name="v">source vector</param>
 		void allocate_memory_block(std::vector<T> v)
 		{
 			if (!m_allocated)
@@ -179,6 +202,56 @@ namespace allocator
 				{
 					*(m_obj + i) = e;
 					++i;
+				}
+
+				m_allocated = true;
+
+				m_block_allocation = true;
+			}
+
+		}
+
+		/// <summary>
+		/// Allocate memory block using ptr to the first element of the array
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="size"></param>
+		void allocate_memory_block(T* ptr, size_t size)
+		{
+			if (!m_allocated)
+			{
+				m_count = size;
+
+				m_obj = new T[m_count];
+
+				for (size_t i = 0; i < m_count; i++)
+				{
+					*(m_obj + i) = *(ptr + i);
+				}
+
+				m_allocated = true;
+
+				m_block_allocation = true;
+			}
+
+		}
+
+		/// <summary>
+		/// Allocate memory block using ptr to the first element of the array (ptr to const)
+		/// </summary>
+		/// <param name="ptr"></param>
+		/// <param name="size"></param>
+		void allocate_memory_block(const T* ptr, size_t size)
+		{
+			if (!m_allocated)
+			{
+				m_count = size;
+
+				m_obj = new T[m_count];
+
+				for (size_t i = 0; i < m_count; i++)
+				{
+					*(m_obj + i) = *(ptr + i);
 				}
 
 				m_allocated = true;

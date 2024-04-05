@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include"..\SmartAllocator\smartAllocator.h"
+#include"..\Lab2_2\Lab2_2_functions.h"
+#include"..\Lab2_2\ukrString.h"
 #include <vector>
 //#include "..\SmartAllocator\smartAllocator.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace allocator;
+
 namespace smart_allocator_Tests
 {
 	TEST_CLASS(Allocation)
@@ -219,7 +222,19 @@ namespace smart_allocator_Tests
 			}
 		}
 
+		TEST_METHOD(IsWorkingWithPtrCorrect)
+		{
+			char* t = "Word";
 
+			smart_allocator<char> w(t, 4);			
+
+			w.iterate([t](char& e, int i)-> bool
+				{
+					Assert::AreEqual(e, *(t + i));
+
+					return true;
+				});
+		}
 
 
 	};
@@ -420,7 +435,141 @@ namespace smart_allocator_Tests
 	};
 }
 
+namespace lab2_tests
+{
+	TEST_CLASS(Lab2)
+	{
+	public:
+		TEST_METHOD(IsSplitFunctionIsCorrect)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString test("Це  рядок   для перевірки  моєї  програми");
+
+			wordSet words;
+
+			Split(test, words, {" "});
+
+			Assert::IsTrue(words.size() == (size_t)6);
+
+			int i = 0;
+			char* str = nullptr;
+			for (Word w : words)
+			{
+				if (i == 0)
+					str = "Це";
+				else if (i == 1)
+					str = "рядок";
+				else if (i == 2)
+					str = "для";
+				else if (i == 3)
+					str = "перевірки";
+				else if (i == 4)
+					str = "моєї";
+				else if (i == 5)
+					str = "програми";
+
+				int j = 0;
+
+				for (char ch : w)
+				{
+					Assert::IsTrue(ch == str[j]);
+					++j;
+				}
+
+				++i;
+			}
+		}
+
+		TEST_METHOD(IsFindTheBiggestWordCorrect)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString test("Це рядок для перевірки моєї програми");
+
+			Word w = FindTheBiggestWord(test);
+
+			char res[] = "перевірки";
+
+			Assert::IsTrue(strlen(res) == w.size());
+
+			for (size_t i = 0; i < w.size(); i++)
+			{
+				Assert::IsTrue(res[i] == w[i]);
+			}			
+		}
+
+		TEST_METHOD(IsTrimStringCorrect_Divider2)
+		{
+			using namespace strings;
+			using namespace lab2;
+
+			ukrString res("ролр нг ггнгш нг рол проа енгвкен");
+
+			ukrString test_res("ггнгш рол енгвкен");
+
+			ukrString test_exec_res = lab2::Trim_Words(res, 2);
+
+			Assert::IsTrue(test_res == test_exec_res);
+		}
+	};
+}
+
 namespace ukrString_Tests
 {
+	TEST_CLASS(UkrString_Tests)
+	{
+	public:
+		TEST_METHOD(IsConcatCorrect)
+		{			
+			using namespace strings;
+			ukrString str1("Гарного ");
+			ukrString str2("Дня");
 
+			ukrString res = str1 + str2;
+
+			size_t length = res.getLength();
+
+			const char* test = "Гарного Дня";
+
+			for (size_t i = 0; i < length; i++)
+			{
+				Assert::IsTrue(test[i] == res[i]);
+			}
+
+			ukrString str3("Гарного ");
+			ukrString str4("Дня");
+
+			str3 += str4;
+
+			length = str3.getLength();
+
+			for (size_t i = 0; i < length; i++)
+			{
+				Assert::IsTrue(str3[i] == res[i]);
+			}
+		}
+
+		TEST_METHOD(IsEqualsCorrect)
+		{
+			using namespace strings;
+
+			ukrString str1("Добре");
+			ukrString str2("Добре");
+
+			Assert::IsTrue(str1 == str2);
+		}
+
+		TEST_METHOD(IsNotEqualsCorrect)
+		{
+			using namespace strings;
+
+			ukrString str1("Добре");
+			ukrString str2("Добре почуття");
+
+			Assert::IsTrue(str1 != str2);
+		}
+	};
 }

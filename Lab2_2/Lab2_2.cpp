@@ -2,71 +2,92 @@
 //
 
 #include <iostream>
+#include<conio.h>
+#include<functional>
+#include<string>
+#include<vector>
+#include"..\Lab2_2\ukrString.h"
+#include"Lab2_2_functions.h"
 
-/* Ukr - Здійснює перетворення символів кирилиці з кодування
-1251 (Cyrillic (Windows)) у кодування 866 (Cyrillic DOS).
-Підтримує символи як російської, так і української мов.*/
-void Ukr(const char *Str, std::size_t strLength, char*& outPut)
-{
-    if (Str == nullptr)
-        return;
-
-    if (strLength == 0)
-        return;
-    
-    outPut = new char [strLength + 1]; 
-
-    strcpy_s(outPut, strLength + 1, Str);
-
-    /* у наступному циклі замінюємо коди деяких російських букв на коди
-    українських, не змінюючи кодів інших символів */
-    for (int i = 0; i < strLength + 1; i++)
-        switch (*(Str + i))
-        {
-        case -78: outPut[i] = 73; break; // І
-        case -77: outPut[i] = 105; break; // і
-        case -86: outPut[i] = 242; break; // Є
-        case -70: outPut[i] = 243; break; // є
-        case -81: outPut[i] = 244; break; // Ї
-        case -65: outPut[i] = 245; break; // ї
-        case -88: outPut[i] = 240; break; // Ё
-        case -72: outPut[i] = 241; break; // ё
-
-        default:
-        {
-            if ((outPut[i] <= -17) && (outPut[i] >= -64))
-                outPut[i] -= 64; //А..Я,а..п
-            
-            else if ((outPut[i] <= -1) && (outPut[i] >= -16))
-                outPut[i] -= 16; //р..я
-        }
-
-        }
-       
-}
 
 int main()
 {
-    char ukr[] = "Якась строка! іііі";
+	using namespace lab2;
+	using namespace strings;
+	using namespace std;
+	char key = '0';
+	do
+	{
+		cout << ukrString("Лабораторна робота номер 2!") << endl;
+	
+		cout << ukrString("Введіть ваш рядок:\n");
 
-    char *ukr_out;
+		ukrString inp;
 
-    Ukr(ukr, strlen(ukr), ukr_out);
+		inp.use_for_input();
 
-    std::cout << *ukr_out;
+		ukrString::getLine(cin, inp);
 
-    delete[] ukr_out;
+		cout << ukrString("Ви ввели:") << endl;
+		cout << inp;
 
-    system("Pause");
+		char key = Input<char>(ukrString("\nВиберіть опцію, та натисніть ENTER: \n\t- 1) Пошук слова макс довжини, натисніть 1 \n\t- 2) Виконати завдання за варіантом (5) натисніть 2 \n\t- 3) Вийти, натисніть 3"),
+			[](std::string& str)->char {return *str.c_str(); },
+			[](std::string& str, strings::ukrString& error)->bool
+			{
+				int input = -1;
+
+				try
+				{
+					input = std::stoi(str);
+				}
+				catch (...)
+				{
+					error = "Невірний ввод!";
+					return false;
+				}
+
+				if (!(input >= 1 && input <= 3))
+				{
+					error = "Невірний діапазон!";
+					return false;
+				}
+
+				return true;
+
+			});
+		
+		Word biggest;
+
+		ukrString big;
+
+		switch (key)
+		{
+		case '1':
+						
+			biggest = FindTheBiggestWord(inp);
+			
+			big = ukrString(biggest); big.use_for_input();
+
+			cout << ukrString("Найбільше слово знайдено: \n") << big << endl;
+			
+			break;
+		case '2':
+
+			cout << ukrString("Видалення із рядка слова, довжина яких парна") << endl;
+
+			cout << Trim_Words(inp, 2) <<endl;
+
+			break;
+		default:
+			break;
+		}
+
+		cout << ukrString("\nЯкщо ви бажаєте вийти? Натисніть 1. Або будь яку іншу клавішу.");
+		key = _getch();
+	} while (key != '1');
+
+
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
